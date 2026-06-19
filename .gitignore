@@ -1,2 +1,8 @@
 Flight_Controller_PCB/.history/
 Flight_Controller_PCB/FlightController-backups/
+firmware/Flight_Computer/.pio
+firmware/Flight_Computer/.vscode/.browse.c_cpp.db*
+firmware/Flight_Computer/.vscode/c_cpp_properties.json
+firmware/Flight_Computer/.vscode/launch.json
+firmware/Flight_Computer/.vscode/ipch
+
