@@ -6,8 +6,7 @@ Register Lookup Table
 
 ***/
 
-static const RegisterInfo REGISTER_TABLE[] =
-{
+static const RegisterInfo REGISTER_TABLE[] = {
     {0x00, false, true},
     {0x01, true,  true},
     {0x03, true,  true},
@@ -75,21 +74,18 @@ static const RegisterInfo REGISTER_TABLE[] =
     {0x48, false, false},
 };
 
-BQ25798::BQ25798(int SDA, int SCL, uint8_t address)
-{
+BQ25798::BQ25798(int SDA, int SCL, uint8_t address) {
     _wire = new TwoWire(0);
     _wire->begin(SDA, SCL);
     _address = address;
 }
 
-bool BQ25798::begin()
-{
+bool BQ25798::begin() {
     _wire->beginTransmission(_address);
     return (_wire->endTransmission() == 0);
 }
 
-const RegisterInfo* BQ25798::getRegisterInfo(uint8_t reg) const
-{
+const RegisterInfo* BQ25798::getRegisterInfo(uint8_t reg) const {
     for (const auto &entry : REGISTER_TABLE)
     {
         if (entry.address == reg)
@@ -101,8 +97,7 @@ const RegisterInfo* BQ25798::getRegisterInfo(uint8_t reg) const
     return nullptr;
 }
 
-bool BQ25798::writeRegister(uint8_t reg, uint16_t value)
-{
+bool BQ25798::writeRegister(uint8_t reg, uint16_t value) {
     const RegisterInfo *info = getRegisterInfo(reg);
 
     if (info == nullptr)
@@ -128,8 +123,7 @@ bool BQ25798::writeRegister(uint8_t reg, uint16_t value)
     return (_wire->endTransmission() == 0);
 }
 
-uint16_t BQ25798::readRegister(uint8_t reg)
-{
+uint16_t BQ25798::readRegister(uint8_t reg) {
     const RegisterInfo *info = getRegisterInfo(reg);
 
     if (info == nullptr)
@@ -158,8 +152,7 @@ uint16_t BQ25798::readRegister(uint8_t reg)
     return _wire->read();
 }
 
-bool BQ25798::initialize3SDefaults()
-{
+bool BQ25798::initialize3SDefaults() {
     struct RegisterInit
     {
         uint8_t reg;
