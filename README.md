@@ -10,14 +10,8 @@
   <li>OV5640 Camera (external)</li>
   <li>Miscellaneous: external 2.4ghz antenna capability; dual USB-C for charging/data; external microSD support</li>
 </ol>
-<h4>TODO: Electronic Speed Controller(s)</h4>
-<ol>
-  <li>TODO: processor? (STM32, RP2040, Atmega328p, ?)</li>
-  <li>Integrated switching MOSFETs</li>
-  <li>One data line from central computer per motor (8 bits - 1 sign bit direction; 7 bits (0-127) speed)</li>
-  <li>Three output lines per motor (3-phase BLDC)</li>
-  <li>3S capability (minimum); max amperage TBD</li>
-</ol>
 
-<h3>Main framework</h3>
-<h4>TODO</h4>
+<h3>Firmware brief description</h3>
+<h4>Modular handling of all sensors with interrupts configured to save battery power</h4>
+<h4>Verbose error/initialization logging to detect I2C issues</h4>
+<h5>Configurable periodic logging of data to microSD card</h5>
