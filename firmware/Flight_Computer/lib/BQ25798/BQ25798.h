@@ -367,8 +367,7 @@ struct RegisterInfo
 class BQ25798
 {
 public:
-    explicit BQ25798(int SDA = 8,
-                     int SCL = 9,
+    explicit BQ25798(TwoWire *wire,
                      uint8_t address = BQ25798_I2C_ADDR);
 
     bool begin();

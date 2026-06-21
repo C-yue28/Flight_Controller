@@ -74,9 +74,8 @@ static const RegisterInfo REGISTER_TABLE[] = {
     {0x48, false, false},
 };
 
-BQ25798::BQ25798(int SDA, int SCL, uint8_t address) {
-    _wire = new TwoWire(0);
-    _wire->begin(SDA, SCL);
+BQ25798::BQ25798(TwoWire *wire, uint8_t address) {
+    _wire = wire;
     _address = address;
 }
 
