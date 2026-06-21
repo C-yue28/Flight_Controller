@@ -165,7 +165,11 @@ void loop() {
 */
 
 void loop() {
-
+  Serial.printf("Altitude: %f m\n", altimeter.getAltitude());
+  Serial.printf("Temperature: %f C\n", altimeter.getTemperature() + imu_temp_event.temperature);
+  Serial.printf("Rotation: %f rad/s, %f rad/s, %f rad/s\n", rotation.x, rotation.y, rotation.z);
+  Serial.printf("Acceleration: %f m/s^2, %f m/s^2, %f m/s^2\n", acceleration.x, acceleration.y, acceleration.z);
+  vTaskDelay(2000 / portTICK_PERIOD_MS);
 }
 
 bool initI2C() {
