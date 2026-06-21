@@ -12,6 +12,8 @@
 // Open-source libraries
 #include <Adafruit_LSM6DSOX.h>
 
+#define ESP32_ADDR 0x67
+
 // I2C pins
 
 #define SDA 8
@@ -51,6 +53,16 @@
 #define MPL3115A2_INT1 37
 #define MPL3115A2_INT2 36
 
+// Motor handling
+#define SERVO_1 0
+#define SERVO_2 1
+#define SERVO_3 2
+#define MOTOR_1 4
+#define MOTOR_2 5
+#define MOTOR_3 6
+
+#define PWM_FREQUENCY 1 // 1 tick, or 1 ms per bit on the output lines to ESC
+
 // I2C  
 
 BQ25798 charger(&Wire);
@@ -63,6 +75,13 @@ sensors_vec_t rotation;
 sensors_vec_t acceleration;
 sensors_event_t imu_temp_event;
 
+TaskHandle_t pwmHandle = NULL;
+
+typedef struct {
+  uint8_t pin;
+  float pwm_duty;
+} motorControlConfig;
+
 bool initI2C();
 int detectI2CDevices();
 
@@ -70,6 +89,7 @@ bool writeFile(const char *path, const char *data, bool overwrite = false);
 uint8_t* readFile(const char *path);
 
 void readIMUData(uint8_t intNum);
+void outputPWM(void *pvParameters);
 
 void setup() {
 
@@ -93,6 +113,14 @@ void setup() {
     Serial.println("SD initialized successfully");
   }
 
+  // run the motors at 25% speed
+  motorControlConfig* initial_pwm_config = new motorControlConfig();
+  initial_pwm_config->pwm_duty = 0.25;
+  for (int i = MOTOR_1; i < MOTOR_3; i++) {
+    initial_pwm_config->pin = i;
+    xTaskCreatePinnedToCore(outputPWM, "PWM", 4096, (void*)initial_pwm_config, 1, NULL, 0);
+  }
+
 }
 
 // Unit tests
@@ -113,6 +141,25 @@ void loop() {
   esp_camera_fb_return(fb); 
   
   delay(100); 
+}
+
+*/
+
+/* Motors
+
+void loop() {
+  motorControlConfig* cfg = new motorControlConfig();
+  cfg->pwm_duty = 0.5;
+  for (int i = MOTOR_1; i < MOTOR_3; i++) {
+    cfg->pin = i;
+    xTaskCreatePinnedToCore(outputPWM, "PWM", 4096, cfg, 1, NULL, 0);
+  }
+  
+  cfg->pwm_duty = 0.0;
+  for (int i = MOTOR_1; i < MOTOR_3; i++) {
+    cfg->pin = i;
+    xTaskCreatePinnedToCore(outputPWM, "PWM", 4096, cfg, 1, NULL, 0);
+  }
 }
 
 */
@@ -285,18 +332,48 @@ uint8_t* readFile(const char *path) {
 }
 
 void readIMUData(uint8_t intNum) {
-  Serial.printf("IMU interrupt %d triggered\n", intNum);
-  sensors_event_t accel;
-  sensors_event_t gyro;
-  imu_temp->getEvent(&imu_temp_event);
-  imu_accel->getEvent(&accel);
-  imu_gyro->getEvent(&gyro);
+  Serial.printf("IMU interrupt %d triggered\n", intNum+1);
+  if (intNum == 0x00) {
+    sensors_event_t gyro;
+    imu_temp->getEvent(&imu_temp_event);
+    imu_gyro->getEvent(&gyro);
 
-  rotation = gyro.gyro;
-  acceleration = accel.acceleration;
+    rotation = gyro.gyro;
+
+    Serial.printf("Temperature: %.2f C\n", imu_temp_event.temperature);
+    Serial.printf("Gyro: %.2f rad/s, %.2f rad/s, %.2f rad/s\n", rotation.x, rotation.y, rotation.z);
+  } else {
+    sensors_event_t accel;
+    imu_accel->getEvent(&accel);
+
+    acceleration = accel.acceleration;
+
+    Serial.printf("Acceleration: %.2f m/s^2, %.2f m/s^2, %.2f m/s^2\n", acceleration.x, acceleration.y, acceleration.z);
+  }
+}
+
+void outputPWM(void* pvParameters) {
+  motorControlConfig* temp_config = (motorControlConfig*)pvParameters;
+  motorControlConfig config;
+  config.pin = temp_config->pin;
+  config.pwm_duty = temp_config->pwm_duty;
+  // Send 8-bit PWM after sending arbitrary 8-bit address - change to 4-bit later?
+ 
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
+  for (int i = 0; i < 8; i++) {
+    motorController.digitalWrite(config.pin, (ESP32_ADDR >> i) & 0x01);
+    vTaskDelayUntil(&xLastWakeTime, PWM_FREQUENCY);
+  }
   
-  Serial.printf("Temperature: %.2f C\n", imu_temp_event.temperature);
-  Serial.printf("Acceleration: %.2f m/s^2, %.2f m/s^2, %.2f m/s^2\n", acceleration.x, acceleration.y, acceleration.z);
-  Serial.printf("Gyro: %.2f rad/s, %.2f rad/s, %.2f rad/s\n", rotation.x, rotation.y, rotation.z);
+  uint8_t pwm_bits = (uint8_t)(config.pwm_duty * 255);
+  xLastWakeTime = xTaskGetTickCount();
+
+  for (int i = 0; i < 8; i++) {
+    motorController.digitalWrite(config.pin, (pwm_bits >> i) & 0x01);
+    vTaskDelayUntil(&xLastWakeTime, PWM_FREQUENCY);
+  }
+
+  motorController.digitalWrite(config.pin, LOW);
 }
 
