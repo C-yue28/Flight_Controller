@@ -26,3 +26,16 @@
 
 ![3D Model](media/PCB_3D.png)
 
+<h3>External sources (for the LSM6DSOX firmware libraries)</h3>
+
+[Base LSM6DS Adafruit library](https://github.com/adafruit/Adafruit_LSM6DS/blob/master/examples/adafruit_lsm6ds_unifiedsensors/adafruit_lsm6ds_unifiedsensors.ino)
+
+### Dependencies of this library:
+
+[Adafruit_BusIO](https://github.com/adafruit/Adafruit_BusIO/tree/master)
+
+[Adafruit_Sensor](https://github.com/adafruit/Adafruit_Sensor/tree/master)
+
+<h3>BOM</h3>
+
+::TODO::
