@@ -7,7 +7,7 @@
 #include <BQ25798.h>
 #include <TCA9534.h>
 #include <OV5640.h>
-#include <MPL3115A2.h>
+#include <BME280.h>
 
 // Open-source libraries
 #include <Adafruit_LSM6DSOX.h>
@@ -49,10 +49,6 @@
 #define IMU_INT1 41
 #define IMU_INT2 42
 
-// MPL3115A2 (altimeter)
-#define MPL3115A2_INT1 37
-#define MPL3115A2_INT2 36
-
 // Motor handling
 #define SERVO_1 0
 #define SERVO_2 1
@@ -67,7 +63,7 @@
 
 BQ25798 charger(&Wire);
 TCA9534 motorController(&Wire);
-MPL3115A2 altimeter(&Wire);
+BME280 bme280(&Wire);
 Adafruit_LSM6DSOX imu;
 Adafruit_Sensor *imu_temp, *imu_gyro, *imu_accel;
 
@@ -164,13 +160,27 @@ void loop() {
 
 */
 
+/* BME280
+
 void loop() {
-  Serial.printf("Altitude: %f m\n", altimeter.getAltitude());
+  Serial.printf("Temperature: %f C\n", bme280.getTemperature());
+  Serial.printf("Pressure: %f Pa\n", bme280.getPressure());
+  Serial.printf("Humidity: %f %%\n", bme280.getHumidity());
+  vTaskDelay(2000 / portTICK_PERIOD_MS);
+}
+
+*/
+
+/* IMU
+
+void loop() {
   Serial.printf("Temperature: %f C\n", altimeter.getTemperature() + imu_temp_event.temperature);
   Serial.printf("Rotation: %f rad/s, %f rad/s, %f rad/s\n", rotation.x, rotation.y, rotation.z);
   Serial.printf("Acceleration: %f m/s^2, %f m/s^2, %f m/s^2\n", acceleration.x, acceleration.y, acceleration.z);
   vTaskDelay(2000 / portTICK_PERIOD_MS);
 }
+
+*/
 
 bool initI2C() {
   bool success_I2C = Wire.begin(SDA, SCL);
@@ -233,19 +243,11 @@ bool initI2C() {
   motorController.begin();
   Serial.println("TCA9534 initialized");
 
-  // MPL3115A2
-  altimeter.begin();
-  pinMode(MPL3115A2_INT1, OUTPUT_OPEN_DRAIN | INPUT);
-  pinMode(MPL3115A2_INT2, OUTPUT_OPEN_DRAIN | INPUT);
+  // BME280
+  bme280.begin();
+  Serial.println("BME280 initialized");
 
-  //attachInterrupt(digitalPinToInterrupt(MPL3115A2_INT1), do stuff when threshold maybe, FALLING);
-  
-  attachInterrupt(digitalPinToInterrupt(MPL3115A2_INT2), [&altimeter]() {
-    altimeter.readAllData();
-  }, LOW);
-  
-  Serial.println("MPL3115A2 altimeter initialized with interrupts");
-
+  // IMU
   if (!imu.begin_I2C(IMU_I2C_ADDR)) {
     Serial.println("Failed to initialize IMU!");
     return false;
