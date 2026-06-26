@@ -1,7 +1,7 @@
 <h1>Custom Flight Controller</h1>
 
 <h3>Why did I make this?</h3>
-<h4>Flight has always been something that has fascinated me and so far my only experience has been with assembling premade drone kits or glider kits. I want to be able to go out and fly something that I made essentially from scratch. I have this vision of myself standing on the roof, tossing the plane off, and watching it fly up into the sky, and then looking at the camera feed to see the world from up high.</h4>
+<p>Flight has always been something that has fascinated me and so far my only experience has been with assembling premade drone kits or glider kits. I want to be able to go out and fly something that I made essentially from scratch. I have this vision of myself standing on the roof, tossing the plane off, and watching it fly up into the sky, and then looking at the camera feed to see the world from up high.</p>
 
 <h3>Main components/features</h3>
 <ol>
@@ -14,10 +14,28 @@
 </ol>
 
 <h3>Firmware brief description</h3>
-<h4>Modular handling of all sensors with interrupts configured to save battery power</h4>
-<h4>Verbose error/initialization logging to detect I2C issues</h4>
-<h5>Configurable periodic logging of data to microSD card</h5>
+- Modular handling of all sensors with interrupts configured to save battery power
+- Verbose error/initialization logging to detect I2C issues
+- Ability to log data to microSD card
 
 <h3>Images</h3>
 
-[Schematic](media/PCB Schematic.png)
+![Schematic](media/PCB_schematic.png)
+
+![PCB design](media/PCB_design.png)
+
+![3D Model](media/PCB_3D.png)
+
+<h3>External sources (for the LSM6DSOX firmware libraries)</h3>
+
+[Base LSM6DS Adafruit library](https://github.com/adafruit/Adafruit_LSM6DS/blob/master/examples/adafruit_lsm6ds_unifiedsensors/adafruit_lsm6ds_unifiedsensors.ino)
+
+### Dependencies of this library:
+
+[Adafruit_BusIO](https://github.com/adafruit/Adafruit_BusIO/tree/master)
+
+[Adafruit_Sensor](https://github.com/adafruit/Adafruit_Sensor/tree/master)
+
+<h3>BOM</h3>
+
+::TODO::
