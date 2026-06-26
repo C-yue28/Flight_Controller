@@ -1,5 +1,8 @@
 <h1>Custom Flight Controller</h1>
 
+<h3>What is it?</h3>
+<p>This is a custom flight controller with onboard LiPo charging capabilities and buck converters for 3V bus as well as support for 6 external motors (3 DC, 3 servo) and 7-pin breakout for external sensor array. USB-UART bus for uploading firmware via serial. Internal power paths for limited high-current motor handling; however most motor wiring will most likely have to be done externally due to PCB limitations.</p>
+
 <h3>Why did I make this?</h3>
 <p>Flight has always been something that has fascinated me and so far my only experience has been with assembling premade drone kits or glider kits. I want to be able to go out and fly something that I made essentially from scratch. I have this vision of myself standing on the roof, tossing the plane off, and watching it fly up into the sky, and then looking at the camera feed to see the world from up high.</p>
 
