@@ -41,9 +41,9 @@
 
 <h3>BOM</h3>
 
-| Item     | Price | Distributor/Supplier |   |   |
-|----------|-------|----------------------|---|---|
-| PCB      | 47.9  | JLCPCB               |   |   |
-| Stencil  | 7.16  | JLCPCB               |   |   |
-| Shipping | 24.15 | JLCPCB               |   |   |
-| Total    | 79.21 |                      |   |   |
+| Item     | Price | Distributor/Supplier |
+|----------|-------|----------------------|
+| PCB      | 47.9  | JLCPCB               |
+| Stencil  | 7.16  | JLCPCB               |
+| Shipping | 24.15 | JLCPCB               |
+| Total    | 79.21 |                      |
